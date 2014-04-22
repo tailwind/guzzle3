@@ -13,6 +13,9 @@ use Guzzle\Http\Message\RequestInterface;
  */
 class CurlMulti extends AbstractHasDispatcher implements CurlMultiInterface
 {
+    /** @var array of all the requests made in multi curl. */
+    protected $sentRequests;
+
     /** @var resource cURL multi handle. */
     protected $multiHandle;
 
@@ -63,7 +66,8 @@ class CurlMulti extends AbstractHasDispatcher implements CurlMultiInterface
 
     public function add(RequestInterface $request)
     {
-        $this->requests[] = $request;
+        $this->sentRequests[] = $request;
+        $this->requests[]     = $request;
         // If requests are currently transferring and this is async, then the
         // request must be prepared now as the send() method is not called.
         $this->beforeSend($request);
@@ -131,6 +135,7 @@ class CurlMulti extends AbstractHasDispatcher implements CurlMultiInterface
     protected function throwMultiException(array $exceptions, array $successful)
     {
         $multiException = new MultiTransferException('Errors during multi transfer');
+        $multiException->sendBatchRequests = $this->sentRequests;
 
         while ($e = array_shift($exceptions)) {
             $multiException->addFailedRequestWithException($e['request'], $e['exception']);
