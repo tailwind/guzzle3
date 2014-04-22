@@ -13,6 +13,7 @@ class MultiTransferException extends ExceptionCollection
     protected $successfulRequests = array();
     protected $failedRequests = array();
     protected $exceptionForRequest = array();
+    public    $sentBatchRequests = array();
 
     /**
      * Get all of the requests in the transfer
