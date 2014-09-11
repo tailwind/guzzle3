@@ -865,6 +865,22 @@ class Response extends AbstractMessage implements \Serializable
     }
 
     /**
+     * Parse the JSON response body and return an object
+     *
+     * @return array|string|int|bool|float
+     * @throws RuntimeException if the response body is not in JSON format
+     */
+    public function jsonObj()
+    {
+        $data = json_decode((string) $this->body, true);
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new RuntimeException('Unable to parse response body into JSON: ' . json_last_error());
+        }
+
+        return $data === null ? array() : $data;
+    }
+
+    /**
      * Parse the XML response body and return a \SimpleXMLElement.
      *
      * In order to prevent XXE attacks, this method disables loading external
