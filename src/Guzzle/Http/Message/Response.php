@@ -872,7 +872,7 @@ class Response extends AbstractMessage implements \Serializable
      */
     public function jsonObj()
     {
-        $data = json_decode((string) $this->body, true);
+        $data = json_decode((string) $this->body, false);
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new RuntimeException('Unable to parse response body into JSON: ' . json_last_error());
         }
